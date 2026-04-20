@@ -1,6 +1,6 @@
 // Database configuration
 exports.databaseConfig = {
-    mongoURI: process.env.MONGODB_URI || 'mongodb://localhost:27017/strawberry-farm'
+    mongoURI: process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/strawberry-farm'
 };
 
 // Email configuration
