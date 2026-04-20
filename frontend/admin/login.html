@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Strawberry Farm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('../rem (4).jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-logo img {
+            height: 60px;
+        }
+
+        h1 {
+            color: rgba(190,24,24,225);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: rgba(190,24,24,225);
+            outline: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(190,24,24,225);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background: rgba(160,20,20,225);
+        }
+
+        .error-message {
+            color: rgba(190,24,24,225);
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .back-to-site {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-to-site a {
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .back-to-site a:hover {
+            color: rgba(190,24,24,225);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-logo">
+            <img src="../logo.svg" alt="Logo">
+        </div>
+        <h1>Admin Login</h1>
+        <div id="errorMessage" class="error-message"></div>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        <div class="back-to-site">
+            <a href="../index.html">← Back to Main Site</a>
+        </div>
+    </div>
+
+    <script>
+        // Check if already logged in
+        window.addEventListener('load', function() {
+            const isAdmin = localStorage.getItem('isAdmin');
+            const lastLoginTime = localStorage.getItem('lastLoginTime');
+            const currentTime = new Date().getTime();
+            
+            // Clear old sessions (after 24 hours)
+            if (lastLoginTime && (currentTime - lastLoginTime > 24 * 60 * 60 * 1000)) {
+                localStorage.removeItem('isAdmin');
+                localStorage.removeItem('lastLoginTime');
+            } else if (isAdmin === 'true') {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const errorMessage = document.getElementById('errorMessage');
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // Clear previous error
+            errorMessage.style.display = 'none';
+            
+            // Validate input
+            if (!username || !password) {
+                errorMessage.textContent = 'Please enter both username and password';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Check credentials against server
+            const API_BASE_URL = 'http://localhost:5000';
+            fetch(`${API_BASE_URL}/api/auth/admin-login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: username, password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.role === 'admin') {
+                    // Store login status and time
+                    localStorage.setItem('isAdmin', 'true');
+                    localStorage.setItem('lastLoginTime', new Date().getTime());
+                    localStorage.setItem('adminName', data.name || 'Admin');
+                    localStorage.setItem('token', username);
+                    localStorage.setItem('userRole', 'admin');
+                    
+                    // Redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                } else {
+                    errorMessage.textContent = 'Invalid username or password or not an admin';
+                    errorMessage.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                errorMessage.textContent = 'Error connecting to server';
+                errorMessage.style.display = 'block';
+                console.error('Login error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

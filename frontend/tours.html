@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farm Tours - Fresh Strawberries</title>
+    <script src="js/auth-check.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; }
+        /* Hide default scrollbar but allow scrolling (cross-browser) */
+        html, body {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        html::-webkit-scrollbar, body::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        .main-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(190,24,24,225);
+            color: #fff;
+            z-index: 1000;
+            padding: 0 32px;
+        }
+        .navbar-logo img { height: 56px; filter: brightness(0) invert(1); }
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+        .navbar-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 18px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .navbar-links a:hover {
+            background: #fff;
+            color: rgba(190,24,24,225);
+        }
+        .tours-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 60px 20px 0 20px;
+        }
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: rgba(190,24,24,225);
+        }
+        .hero-section {
+            position: relative;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .hero-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.7), transparent);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            color: white;
+        }
+        .hero-title {
+            font-size: 2.5em;
+            margin-bottom: 0px;
+            max-width: 600px;
+        }
+        .hero-description {
+            font-size: 1.2em;
+            max-width: 500px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .product-grid {
+            margin-top: 0px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 200px);
+            align-content: center;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 6px 32px rgba(190,24,24,0.10), 0 2px 8px rgba(190,24,24,0.08);
+            border: 1.5px solid #ececec;
+            transition: transform 0.35s cubic-bezier(.4,2,.6,1), box-shadow 0.35s, border 0.3s;
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-12px) scale(1.035);
+            box-shadow: 0 16px 48px rgba(190,24,24,0.18), 0 4px 16px rgba(190,24,24,0.10);
+            border: 1.5px solid #be1818;
+        }
+        .product-image {
+            border-radius: 18px 18px 0 0;
+            transition: transform 0.35s;
+            width: calc(100% - 40px);
+            height: 240px;
+            object-fit: cover;
+            background: none;
+            display: block;
+            margin: 20px auto 0 auto;
+        }
+        .product-card:hover .product-image {
+            transform: scale(1.06);
+        }
+        .add-to-cart {
+            background: linear-gradient(90deg, #be1818 60%, #ff5e7e 100%);
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 12px 32px;
+            font-size: 1.1em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            box-shadow: 0 2px 12px rgba(190,24,24,0.10);
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+            margin-top: 8px;
+        }
+        .add-to-cart:hover {
+            background: linear-gradient(90deg, #a01414 60%, #ff3e6c 100%);
+            box-shadow: 0 6px 24px rgba(190,24,24,0.18);
+            transform: translateY(-2px) scale(1.04);
+        }
+        .product-image {
+            width: 100%;
+            aspect-ratio: 1/1;
+            height: auto;
+            max-width: 300px;
+            max-height: 300px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            object-fit: contain;
+            background: #f5f5f5;
+        }
+        .product-info {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .product-title {
+            font-size: 1.2em;
+            color: #333;
+            margin: 0;
+        }
+        .product-price {
+            font-size: 1.3em;
+            color: rgba(190,24,24,225);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .product-description {
+            margin: 0;
+            color: #666;
+            line-height: 1.5;
+        }
+        .add-to-cart {
+            display: inline-block;
+            padding: 15px 40px;
+            background: rgba(190,24,24,225);
+            color: white;
+            border: none;
+            text-decoration: none;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Montserrat';
+            font-size: 1.1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(190,24,24,0.3);
+        }
+        .add-to-cart:hover {
+            background: rgba(160,20,20,225);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(190,24,24,0.4);
+        }
+        .auth-buttons {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+        .auth-button {
+            padding: 15px 40px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Montserrat';
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+        .auth-button:hover {
+            background: white;
+            color: rgba(190,24,24,225);
+            transform: translateY(-2px);
+        }
+</style>
+<style>
+/* Scroll Disk Bar & Ripple Button Styles (from homepage) */
+.scroll-indicator-group {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 30001 !important;
+}
+.side-disk-scroll-indicator {
+  width: 56px;
+  height: 320px;
+  z-index: 1003;
+  cursor: pointer;
+  pointer-events: all;
+  margin-bottom: 5px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+}
+.side-disk-svg { width: 56px; height: 320px; display: block; pointer-events: none; }
+.side-disk-bg { stroke: rgba(190,24,24,0.3); stroke-width: 4; }
+.side-disk-bar { stroke: rgba(190,24,24,225); stroke-width: 4; stroke-linecap: square; filter: none; transition: y2 0.1s; }
+.scroll-indicator { z-index: 1004; pointer-events: auto; cursor: pointer; opacity: 1; transition: transform 0.3s; background: none; box-shadow: none; padding: 0; border-radius: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.scroll-text { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 16px; letter-spacing: 1px; text-transform: uppercase; color: #fff !important; margin: 0; font-family: 'Montserrat', Arial, sans-serif !important; font-weight: 400; text-align: center; line-height: 1; padding: 8px 0; }
+.ripple-circle, .ripple-circle2, .ripple-circle3 { stroke: #fff !important; }
+.blinking-arrow { fill: #fff !important; }
+.scroll-circles { width: 60px; height: 60px; filter: none; margin: 0; }
+.ripple-circle { animation: ripple-stroke 2s infinite; }
+.ripple-circle2 { animation: ripple-stroke2 2s infinite; animation-delay: 0.3s; }
+.ripple-circle3 { animation: ripple-stroke3 2s infinite; animation-delay: 0.6s; }
+@keyframes ripple-stroke { 0% { r: 20; opacity: 0.25; } 70% { r: 28; opacity: 0.08; } 100% { r: 30; opacity: 0; } }
+@keyframes ripple-stroke2 { 0% { r: 16; opacity: 0.5; } 70% { r: 24; opacity: 0.15; } 100% { r: 26; opacity: 0; } }
+@keyframes ripple-stroke3 { 0% { r: 12; opacity: 0.8; } 70% { r: 20; opacity: 0.2; } 100% { r: 22; opacity: 0; } }
+</style>
+</head>
+<body>
+    <div id="navbar-include"></div>
+    <script src="js/navbar.js"></script>
+
+
+
+    <div class="tours-container">
+        <div class="hero-section">
+            <img src="rem (4).jpg" alt="Farm Tour" class="hero-image">
+            <div class="hero-content">
+                <h1 class="hero-title">Experience the Magic of Strawberry Farming</h1>
+                <p class="hero-description">Join us for an unforgettable tour of our sustainable strawberry farms. Learn about our farming practices, taste fresh strawberries, and create lasting memories.</p>
+            </div>
+        </div>
+        <div class="auth-buttons">
+            <button class="auth-button" onclick="location.href='login.html'">Login</button>
+            <button class="auth-button" onclick="location.href='register.html'">Register</button>
+        </div>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="rem (0).jpg" alt="Fresh Strawberries" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Premium Fresh Strawberries</h3>
+                    <p class="product-description">Enjoy a guided walk through our strawberry fields and pick your own fresh berries.</p>
+                    <p class="product-price">$6.99/lb</p>
+                    <button class="add-to-cart">Book Tour</button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="rem (1).png" alt="Organic Pack" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Organic Family Pack</h3>
+                    <p class="product-description">Perfect for families: includes farm games, strawberry picking, and a picnic area.</p>
+                    <p class="product-price">$15.99/pack</p>
+                    <button class="add-to-cart">Book Tour</button>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="rem (2).jpg" alt="Premium Selection" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Premium Selection Box</h3>
+                    <p class="product-description">VIP farm tour with exclusive tasting, strawberry picking  and a special gift box of strawberries.</p>
+                    <p class="product-price">$9.99/box</p>
+                    <button class="add-to-cart">Book Tour</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="userAuthModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);align-items:center;justify-content:center;z-index:9999;">
+      <div style="background:#fff;padding:32px 28px 24px 28px;border-radius:15px;box-shadow:0 4px 15px rgba(190,24,24,0.15);max-width:350px;width:100%;text-align:center;">
+        <div style='color:rgba(190,24,24,225);font-size:1.3em;font-weight:600;margin-bottom:12px;'>Login or Register Required</div>
+        <div style='color:#333;margin-bottom:22px;'>You must be registered and logged in to add items to your cart.</div>
+        <div style='display:flex;gap:12px;justify-content:center;'>
+          <button onclick="window.location.href='login.html'" style='flex:1;padding:12px 0;background:rgba(190,24,24,225);color:#fff;border:none;border-radius:8px;font-size:1em;font-weight:600;cursor:pointer;transition:background 0.2s;'>Login</button>
+          <button onclick="window.location.href='register.html'" style='flex:1;padding:12px 0;background:rgba(190,24,24,225);color:#fff;border:none;border-radius:8px;font-size:1em;font-weight:600;cursor:pointer;transition:background 0.2s;'>Register</button>
+        </div>
+      </div>
+    </div>
+    <script>
+        // Product data for demo
+        const products = [
+            {
+                id: 'box1',
+                name: 'Premium Fresh Strawberries',
+                price: 6.99,
+                image: 'rem (0).jpg'
+            },
+            {
+                id: 'box2',
+                name: 'Organic Family Pack',
+                price: 15.99,
+                image: 'rem (1).png'
+            },
+            {
+                id: 'box3',
+                name: 'Premium Selection Box',
+                price: 9.99,
+                image: 'rem (2).jpg'
+            }
+        ];
+
+        function isLoggedIn() {
+            return !!localStorage.getItem('token');
+        }
+
+        function showUserAuthModal() {
+            document.getElementById('userAuthModal').style.display = 'flex';
+        }
+
+        function hideUserAuthModal() {
+            document.getElementById('userAuthModal').style.display = 'none';
+        }
+
+
+        function bookTour(productIndex) {
+            // Redirect to booking form page
+            window.location.href = 'book_tour.html';
+        }
+
+        // Attach event listeners to Book Tour buttons (now .add-to-cart)
+        document.querySelectorAll('.add-to-cart').forEach((btn, idx) => {
+            btn.addEventListener('click', () => bookTour(idx));
+        });
+
+        // Optional: Hide modal when clicking outside the box
+        document.getElementById('userAuthModal').addEventListener('click', function(e) {
+            if (e.target === this) hideUserAuthModal();
+        });
+    </script>
+</body>
+</html>
+

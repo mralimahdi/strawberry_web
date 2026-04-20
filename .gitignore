@@ -1,0 +1,9 @@
+node_modules/
+.env
+*.log
+.DS_Store
+.vscode/
+backend-api/uploads/*
+!backend-api/uploads/.gitkeep
+backend-api/public/uploads/*
+!backend-api/public/uploads/.gitkeep

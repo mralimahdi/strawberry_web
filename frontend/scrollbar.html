@@ -1,0 +1,22 @@
+<!-- Reusable Scroll Disk Bar and Scroll Button Component -->
+<!-- Place <div id="scrollbar-include"></div> where you want the scroll controls -->
+<div class="scroll-indicator-group">
+  <div class="side-disk-scroll-indicator" id="sideDiskScrollIndicator">
+    <svg class="side-disk-svg" viewBox="0 0 56 320">
+      <line class="side-disk-bg" x1="28" y1="40" x2="28" y2="300" />
+      <line class="side-disk-glow" x1="28" y1="40" x2="28" y2="300" />
+      <line class="side-disk-bar" id="sideDiskBar" x1="28" y1="40" x2="28" y2="300" />
+    </svg>
+  </div>
+  <div class="scroll-indicator" style="display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; margin:0; padding:0;">
+    <svg class="scroll-circles" viewBox="0 0 60 60" width="60" height="60" fill="none" style="display:block;">
+      <circle class="ripple-circle" cx="30" cy="30" r="20" stroke="#fff" stroke-width="1.2" opacity="0.25"/>
+      <circle class="ripple-circle2" cx="30" cy="30" r="16" stroke="#fff" stroke-width="1.7" opacity="0.5"/>
+      <circle class="ripple-circle3" cx="30" cy="30" r="12" stroke="#fff" stroke-width="2.2" opacity="0.8"/>
+      <g class="down-arrow">
+        <polygon class="blinking-arrow" id="rippleArrow" points="27,30 33,30 30,36" />
+      </g>
+    </svg>
+    <span class="scroll-text" style="color:#fff; font-family:'Montserrat',sans-serif; font-size:14px; margin-top:6px; writing-mode: vertical-rl; transform: rotate(180deg); opacity:0.85;">Scroll</span>
+  </div>
+</div>

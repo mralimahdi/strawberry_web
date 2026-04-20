@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reply to Message - Strawberry Farm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background: #f8f8f8; 
+            font-family: 'Montserrat', sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0;
+        }
+        
+        .container { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); 
+            max-width: 700px; 
+            width: 90%; 
+        }
+        
+        h1 { 
+            color: #be1818; 
+            text-align: center; 
+            margin-bottom: 30px; 
+        }
+        
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            color: #666; 
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: 'Montserrat', sans-serif;
+            display: block;
+        }
+        
+        input:focus, select:focus, textarea:focus { 
+            border-color: #be1818; 
+            outline: none; 
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #be1818;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            margin-top: 10px;
+        }
+        
+        .btn:hover { 
+            background: #a01414; 
+        }
+        
+        .btn-secondary {
+            background: #888;
+        }
+        
+        .btn-secondary:hover {
+            background: #666;
+        }
+        
+        .error-message { 
+            color: #be1818; 
+            text-align: center; 
+            margin-bottom: 20px; 
+            display: none; 
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #be1818;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .original-message {
+            background: #f9f9f9;
+            border-left: 4px solid #be1818;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .original-message h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .original-message p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reply to Message</h1>
+        <div id="reply-error" class="error-message"></div>
+        
+        <div class="original-message">
+            <h3>Message</h3>
+            <p><strong>From:</strong> <span id="originalSender"></span></p>
+            <p><strong>Email:</strong> <span id="originalEmail"></span></p>
+            <p><strong>Message:</strong> <span id="originalMessageContent"></span></p>
+        </div>
+        
+        <form id="replyForm">
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="senderName">Your Name</label>
+                        <input type="text" id="senderName" name="senderName" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="senderEmail">Your Email</label>
+                        <input type="email" id="senderEmail" name="senderEmail" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="receiverName">Receiver Name</label>
+                        <input type="text" id="receiverName" name="receiverName" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="receiverEmail">Receiver Email</label>
+                        <input type="email" id="receiverEmail" name="receiverEmail" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="replyMessage">Your Reply</label>
+                <textarea id="replyMessage" name="replyMessage" rows="6" placeholder="Enter your reply here..." required></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-col">
+                    <button type="submit" class="btn">Send Reply</button>
+                </div>
+                <div class="form-col">
+                    <button type="button" id="cancelReply" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </form>
+        
+        <a href="dashboard.html#messagesSection" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <script>
+        // Pre-fill form if data is passed in URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('senderName')) {
+            document.getElementById('senderName').value = urlParams.get('senderName');
+        }
+        if (urlParams.has('senderEmail')) {
+            document.getElementById('senderEmail').value = urlParams.get('senderEmail');
+        }
+        if (urlParams.has('receiverName')) {
+            document.getElementById('receiverName').value = urlParams.get('receiverName');
+        }
+        if (urlParams.has('receiverEmail')) {
+            document.getElementById('receiverEmail').value = urlParams.get('receiverEmail');
+        }
+        
+        // Display original message
+        if (urlParams.has('receiverName')) {
+            document.getElementById('originalSender').textContent = urlParams.get('receiverName');
+        }
+        if (urlParams.has('receiverEmail')) {
+            document.getElementById('originalEmail').textContent = urlParams.get('receiverEmail');
+        }
+        if (urlParams.has('originalMessage')) {
+            document.getElementById('originalMessageContent').textContent = urlParams.get('originalMessage');
+        } else {
+            document.getElementById('originalMessageContent').textContent = 'Message content not available';
+        }
+        
+        const API_BASE_URL = 'http://localhost:5000';
+
+        // Handle form submission
+        document.getElementById('replyForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const senderName = document.getElementById('senderName').value;
+            const senderEmail = document.getElementById('senderEmail').value;
+            const receiverName = document.getElementById('receiverName').value;
+            const receiverEmail = document.getElementById('receiverEmail').value;
+            const replyMessage = document.getElementById('replyMessage').value;
+            
+            // Validate message
+            if (!replyMessage.trim()) {
+                document.getElementById('reply-error').textContent = 'Please enter a message';
+                document.getElementById('reply-error').style.display = 'block';
+                return;
+            }
+            
+            // Show loading
+            document.body.style.cursor = 'wait';
+            
+            // Send reply via API
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/dashboard/messages/reply`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messageId: urlParams.get('messageId') || '1', // Default to 1 if not provided
+                        fromEmail: senderEmail,
+                        toEmail: receiverEmail,
+                        message: replyMessage
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    alert('Reply sent successfully!');
+                    // Redirect back to messages section
+                    window.location.href = 'dashboard.html#messagesSection';
+                } else {
+                    document.getElementById('reply-error').textContent = 'Failed to send reply: ' + (result.message || 'Unknown error');
+                    document.getElementById('reply-error').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('reply-error').textContent = 'Error sending reply: ' + error.message;
+                document.getElementById('reply-error').style.display = 'block';
+            } finally {
+                document.body.style.cursor = 'default';
+            }
+        });
+        
+        // Handle cancel button
+        document.getElementById('cancelReply').addEventListener('click', function() {
+            if (confirm('Are you sure you want to cancel?')) {
+                // Redirect back to messages section
+                window.location.href = 'dashboard.html#messagesSection';
+            }
+        });
+    </script>
+</body>
+</html>

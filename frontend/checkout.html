@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Checkout - Strawberry Farm</title>
+    <script src="js/auth-check.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        body {
+            background: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('rem (4).jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        .checkout-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE and Edge */
+        }
+        .checkout-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+        .checkout-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .checkout-logo img {
+            height: 60px;
+        }
+        h1 {
+            color: rgba(190,24,24,225);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: rgba(190,24,24,225);
+            outline: none;
+        }
+        .payment-methods {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .payment-methods label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #333;
+        }
+        .order-summary {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        .order-total {
+            font-weight: 600;
+            font-size: 1.1em;
+            text-align: right;
+            margin-top: 10px;
+            color: rgba(190,24,24,225);
+        }
+        .confirm-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(190,24,24,225);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .confirm-btn:hover {
+            background: rgba(160,20,20,225);
+        }
+        .error-message {
+            color: rgba(190,24,24,225);
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <div class="checkout-logo">
+            <img src="logo.svg" alt="Logo" />
+        </div>
+        <h1>Checkout</h1>
+        <div id="error-message" class="error-message"></div>
+        <form id="checkoutForm">
+            <div class="form-group">
+                <label for="name">Name *</label>
+                <input type="text" id="name" name="name" required />
+            </div>
+            <div class="form-group">
+                <label for="phone">Contact Number *</label>
+                <input type="tel" id="phone" name="phone" required pattern="[0-9]{10,15}" />
+            </div>
+            <div class="form-group">
+                <label for="street">Street Address *</label>
+                <textarea id="street" name="street" rows="2" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="city">City *</label>
+                <select id="city" name="city" required>
+                    <option value="">Select City</option>
+                    <option value="Islamabad">Islamabad</option>
+                    <option value="Rawalpindi">Rawalpindi</option>
+                    <option value="Lahore">Lahore</option>
+                    <option value="Karachi">Karachi</option>
+                    <option value="Multan">Multan</option>
+                    <option value="Faisalabad">Faisalabad</option>
+                    <option value="Peshawar">Peshawar</option>
+                    <option value="Quetta">Quetta</option>
+                    <option value="Sialkot">Sialkot</option>
+                    <option value="Bahawalpur">Bahawalpur</option>
+                    <option value="Gujranwala">Gujranwala</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Sargodha">Sargodha</option>
+                    <option value="Sahiwal">Sahiwal</option>
+                    <option value="Mardan">Mardan</option>
+                    <option value="Abbottabad">Abbottabad</option>
+                    <option value="Mingora">Mingora</option>
+                    <option value="Mirpur">Mirpur</option>
+                    <option value="Muzaffarabad">Muzaffarabad</option>
+                    <option value="Dera Ghazi Khan">Dera Ghazi Khan</option>
+                    <option value="Jhelum">Jhelum</option>
+                    <option value="Gujrat">Gujrat</option>
+                    <option value="Kasur">Kasur</option>
+                    <option value="Sheikhupura">Sheikhupura</option>
+                    <option value="Rahim Yar Khan">Rahim Yar Khan</option>
+                    <option value="Chakwal">Chakwal</option>
+                    <option value="Khanewal">Khanewal</option>
+                    <option value="Okara">Okara</option>
+                    <option value="Vehari">Vehari</option>
+                    <option value="Other">Other (Local Area)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="state">State/Province *</label>
+                <input type="text" id="state" name="state" required />
+            </div>
+            <div class="form-group">
+                <!-- Removed postal code field -->
+            </div>
+            <div class="form-group">
+                <label for="country">Country *</label>
+                <input type="text" id="country" name="country" required />
+            </div>
+            <div class="form-group">
+                <label>Payment Method *</label>
+                <div class="payment-methods">
+                    <label><input type="radio" name="paymentMethod" value="COD" required /> Cash on Delivery</label>
+                    <label><input type="radio" name="paymentMethod" value="Advance" /> Advance Payment</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Order Summary</label>
+                <div id="orderSummary" class="order-summary">
+                    <!-- Order items will be populated here -->
+                </div>
+            </div>
+            <button type="submit" class="confirm-btn" id="confirmOrderBtn">Confirm Order</button>
+        </form>
+    </div>
+    <script>
+        // Check if user is logged in
+        function isLoggedIn() {
+            return !!localStorage.getItem('token');
+        }
+
+        if (!isLoggedIn()) {
+            alert('Please login to proceed to checkout.');
+            window.location.href = 'login.html';
+        }
+
+        // Load cart from localStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function renderOrderSummary() {
+            const orderSummary = document.getElementById('orderSummary');
+            orderSummary.innerHTML = '';
+            if (cart.length === 0) {
+                orderSummary.innerHTML = '<p>Your cart is empty.</p>';
+                return;
+            }
+            let total = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                const div = document.createElement('div');
+                div.className = 'order-item';
+                div.textContent = `${item.name} x ${item.quantity} - $${itemTotal.toFixed(2)}`;
+                orderSummary.appendChild(div);
+            });
+            // Dummy shipping rates by city
+            const citySelect = document.getElementById('city');
+            let shipping = 5; // default
+            if (citySelect) {
+                const city = citySelect.value;
+                if (city === 'Islamabad' || city === 'Multan') shipping = 2;
+                else if (city === 'Karachi') shipping = 3;
+                else if (city === 'Other') shipping = 6;
+                else if (city) shipping = 4;
+            }
+            const shippingDiv = document.createElement('div');
+            shippingDiv.className = 'order-item';
+            shippingDiv.textContent = `Shipping: $${shipping.toFixed(2)}`;
+            orderSummary.appendChild(shippingDiv);
+            const totalDiv = document.createElement('div');
+            totalDiv.className = 'order-total';
+            totalDiv.textContent = `Total: $${(total + shipping).toFixed(2)}`;
+            orderSummary.appendChild(totalDiv);
+        }
+
+        renderOrderSummary();
+
+        // Update shipping and total when city changes
+        document.getElementById('city').addEventListener('change', renderOrderSummary);
+
+        const confirmOrderBtn = document.getElementById('confirmOrderBtn');
+
+        document.getElementById('checkoutForm').onsubmit = async function(e) {
+            e.preventDefault();
+            confirmOrderBtn.disabled = true;
+            confirmOrderBtn.textContent = 'Processing...';
+
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.style.display = 'none';
+            errorMessage.textContent = '';
+
+            if (cart.length === 0) {
+                errorMessage.textContent = 'Your cart is empty.';
+                errorMessage.style.display = 'block';
+                confirmOrderBtn.disabled = false;
+                confirmOrderBtn.textContent = 'Confirm Order';
+                return;
+            }
+
+const formData = new FormData(e.target);
+const customerDetails = {
+    name: formData.get('name'),
+    email: '', // Email not collected here, can be fetched from user profile if needed
+    phone: formData.get('phone')
+};
+const shippingAddress = {
+    street: formData.get('street').trim().replace(/[\r\n]+/g, ' '),
+    city: formData.get('city'),
+    state: formData.get('state'),
+    zipCode: formData.get('zipCode'),
+    country: formData.get('country')
+};
+const paymentMethod = formData.get('paymentMethod');
+const items = cart.map(item => ({
+    product: item.id,
+    quantity: item.quantity
+}));
+
+            const token = localStorage.getItem('token');
+
+            try {
+                // Calculate total
+                let total = 0;
+                cart.forEach(item => {
+                    total += item.price * item.quantity;
+                });
+                // Dummy shipping rates by city
+                let shipping = 5;
+                const city = formData.get('city');
+                if (city === 'Islamabad' || city === 'Multan') shipping = 2;
+                else if (city === 'Karachi') shipping = 3;
+                else if (city === 'Other') shipping = 6;
+                else if (city) shipping = 4;
+                total += shipping;
+
+                const response = await fetch('http://localhost:5000/api/dashboard/orders/new', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({
+                        customer: formData.get('name'),
+                        products: cart.map(item => item.name).join(', '),
+                        quantity: cart.reduce((sum, item) => sum + item.quantity, 0),
+                        total: total.toFixed(2),
+                        street: formData.get('street'),
+                        city: formData.get('city'),
+                        state: formData.get('state'),
+                        country: formData.get('country'),
+                        paymentMethod: formData.get('paymentMethod'),
+                        phone: formData.get('phone')
+                    })
+                });
+
+                const data = await response.json();
+                if (!data.success) {
+                    throw new Error('Failed to place order');
+                }
+                alert('Order confirmed! Your order number is ' + data.id);
+                errorMessage.textContent = 'Your order has been confirmed. We will contact you soon.';
+                errorMessage.style.color = 'green';
+                errorMessage.style.display = 'block';
+                localStorage.removeItem('cart');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            } finally {
+                confirmOrderBtn.disabled = false;
+                confirmOrderBtn.textContent = 'Confirm Order';
+            }
+        };
+    </script>
+</body>
+</html>

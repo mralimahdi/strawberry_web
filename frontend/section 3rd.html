@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order now! Write Effect</title>
+    <style>
+        body {
+            min-height: 100vh;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            overflow: hidden;
+        }
+        .write-effect {
+            font-size: 200px;
+            color: red;
+            font-family: 'Blacksword', cursive, sans-serif;
+            letter-spacing: 2px;
+            white-space: pre;
+            opacity: 1;
+            transition: none;
+            user-select: none;
+        }
+    </style>
+    <!-- Blacksword font from Google Fonts or CDN -->
+    <link href="https://fonts.cdnfonts.com/css/blacksword" rel="stylesheet">
+</head>
+<body>
+    <div id="orderNow" class="write-effect"></div>
+    <script>
+        const text = 'Order now!';
+        const el = document.getElementById('orderNow');
+        // Prevent page scroll, but allow scroll events
+        document.body.style.overflow = 'hidden';
+
+        // Simulate scroll with mouse wheel or touch
+        let progress = 0; // 0 to 1
+        function updateText() {
+            // Always show full or partial characters, not words
+            const len = Math.floor(progress * text.length + 0.0001); // avoid rounding up
+            el.textContent = text.slice(0, len);
+        }
+        updateText();
+
+        function clamp(val, min, max) {
+            return Math.max(min, Math.min(max, val));
+        }
+
+        function onWheel(e) {
+            // Make it slower and more granular per character
+            progress += e.deltaY * 0.0015;
+            progress = clamp(progress, 0, 1);
+            updateText();
+            e.preventDefault();
+        }
+
+        function onTouchMove(e) {
+            if (e.touches.length === 1) {
+                const touch = e.touches[0];
+                if (window._lastTouchY !== undefined) {
+                    let dy = touch.clientY - window._lastTouchY;
+                    progress -= dy * 0.003 / text.length;
+                    progress = clamp(progress, 0, 1);
+                    updateText();
+                }
+                window._lastTouchY = touch.clientY;
+            }
+        }
+        function onTouchEnd() {
+            window._lastTouchY = undefined;
+        }
+
+        window.addEventListener('wheel', onWheel, { passive: false });
+        window.addEventListener('touchmove', onTouchMove, { passive: false });
+        window.addEventListener('touchend', onTouchEnd);
+    </script>
+</body>
+</html>

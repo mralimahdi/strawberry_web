@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Now - Fresh Strawberries</title>
+    <script src="js/auth-check.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; }
+        .main-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(190,24,24,225);
+            color: #fff;
+            z-index: 1000;
+            padding: 0 32px;
+        }
+        .navbar-logo img { height: 56px; filter: brightness(0) invert(1); }
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+        .navbar-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 18px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .navbar-links a:hover {
+            background: #fff;
+            color: rgba(190,24,24,225);
+        }
+        .product-grid {
+            margin-top: 150px; /* Increased from 100px */
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 200px); /* Added to help with vertical centering */
+            align-content: center; /* Added for vertical centering */
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 6px 32px rgba(190,24,24,0.10), 0 2px 8px rgba(190,24,24,0.08);
+            border: 1.5px solid #ececec;
+            transition: transform 0.35s cubic-bezier(.4,2,.6,1), box-shadow 0.35s, border 0.3s;
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-12px) scale(1.035);
+            box-shadow: 0 16px 48px rgba(190,24,24,0.18), 0 4px 16px rgba(190,24,24,0.10);
+            border: 1.5px solid #be1818;
+        }
+        .product-image {
+            border-radius: 18px 18px 0 0;
+            transition: transform 0.35s;
+            width: calc(100% - 40px);
+            height: 240px;
+            object-fit: cover;
+            background: none;
+            display: block;
+            margin: 20px auto 0 auto;
+        }
+        .product-card:hover .product-image {
+            transform: scale(1.06);
+        }
+        .add-to-cart {
+            background: linear-gradient(90deg, #be1818 60%, #ff5e7e 100%);
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 12px 32px;
+            font-size: 1.1em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            box-shadow: 0 2px 12px rgba(190,24,24,0.10);
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+            margin-top: 8px;
+        }
+        .add-to-cart:hover {
+            background: linear-gradient(90deg, #a01414 60%, #ff3e6c 100%);
+            box-shadow: 0 6px 24px rgba(190,24,24,0.18);
+            transform: translateY(-2px) scale(1.04);
+        }
+        .product-image {
+            width: 100%;
+            aspect-ratio: 1/1;
+            height: auto;
+            max-width: 300px;
+            max-height: 300px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            object-fit: contain;
+            background: #f5f5f5;
+        }
+        .product-info {
+            padding: 25px; /* Increased from 20px */
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Added consistent spacing between elements */
+        }
+        .product-title {
+            font-size: 1.2em;
+            color: #333;
+            margin: 0; /* Removed margin-bottom since we're using gap */
+        }
+        .product-price {
+            font-size: 1.3em;
+            color: rgba(190,24,24,225);
+            font-weight: 600;
+            margin-bottom: 10px; /* Added spacing before the button */
+        }
+        .product-description {
+            margin: 0; /* Removed margins since we're using gap */
+            color: #666;
+            line-height: 1.5;
+        }
+        .add-to-cart {
+            display: inline-block;
+            padding: 15px 40px;
+            background: rgba(190,24,24,225);
+            color: white;
+            border: none;
+            text-decoration: none;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Montserrat';
+            font-size: 1.1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(190,24,24,0.3);
+        }
+        .add-to-cart:hover {
+            background: rgba(160,20,20,225);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(190,24,24,0.4);
+        }
+        .auth-buttons {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+        .auth-button {
+            padding: 15px 40px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Montserrat';
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+        .auth-button:hover {
+            background: white;
+            color: rgba(190,24,24,225);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-include"></div>
+    <script src="js/navbar.js"></script>
+<div id="userAuthModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);align-items:center;justify-content:center;z-index:9999;">
+  <div style="background:#fff;padding:32px 28px 24px 28px;border-radius:15px;box-shadow:0 4px 15px rgba(190,24,24,0.15);max-width:350px;width:100%;text-align:center;">
+    <div style='color:rgba(190,24,24,225);font-size:1.3em;font-weight:600;margin-bottom:12px;'>Login or Register Required</div>
+    <div style='color:#333;margin-bottom:22px;'>You must be registered and logged in to add items to your cart.</div>
+    <div style='display:flex;gap:12px;justify-content:center;'>
+      <button onclick="window.location.href='login.html'" style='flex:1;padding:12px 0;background:rgba(190,24,24,225);color:#fff;border:none;border-radius:8px;font-size:1em;font-weight:600;cursor:pointer;transition:background 0.2s;'>Login</button>
+      <button onclick="window.location.href='register.html'" style='flex:1;padding:12px 0;background:rgba(190,24,24,225);color:#fff;border:none;border-radius:8px;font-size:1em;font-weight:600;cursor:pointer;transition:background 0.2s;'>Register</button>
+    </div>
+  </div>
+</div>
+    <div class="auth-buttons">
+        <button class="auth-button" onclick="location.href='login.html'">Login</button>
+        <button class="auth-button" onclick="location.href='register.html'">Register</button>
+    </div>
+
+    <div class="product-grid">
+        <div class="product-card">
+            <img src="rem (0).jpg" alt="Fresh Strawberries" class="product-image">
+            <div class="product-info">
+                <h3 class="product-title">Premium Fresh Strawberries</h3>
+                <p class="product-description">Hand-picked, perfectly ripe strawberries from our organic farms.</p>
+                <p class="product-price">$6.99/lb</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+        </div>
+        
+        <div class="product-card">
+            <img src="rem (1).png" alt="Organic Pack" class="product-image">
+            <div class="product-info">
+                <h3 class="product-title">Organic Family Pack</h3>
+                <p class="product-description">Large pack of certified organic strawberries, perfect for families.</p>
+                <p class="product-price">$15.99/pack</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+        </div>
+        
+        <div class="product-card">
+            <img src="rem (2).jpg" alt="Premium Selection" class="product-image">
+            <div class="product-info">
+                <h3 class="product-title">Premium Selection Box</h3>
+                <p class="product-description">Our finest selection of jumbo-sized strawberries.</p>
+                <p class="product-price">$9.99/box</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Product data for demo
+        const products = [
+            {
+                id: 'box1',
+                name: 'Premium Fresh Strawberries',
+                price: 6.99,
+                image: 'rem (0).jpg'
+            },
+            {
+                id: 'box2',
+                name: 'Organic Family Pack',
+                price: 15.99,
+                image: 'rem (1).png'
+            },
+            {
+                id: 'box3',
+                name: 'Premium Selection Box',
+                price: 9.99,
+                image: 'rem (2).jpg'
+            }
+        ];
+
+        function isLoggedIn() {
+            return !!localStorage.getItem('token');
+        }
+
+        function showUserAuthModal() {
+            document.getElementById('userAuthModal').style.display = 'flex';
+        }
+
+        function hideUserAuthModal() {
+            document.getElementById('userAuthModal').style.display = 'none';
+        }
+
+        function addToCart(productIndex) {
+            if (!isLoggedIn()) {
+                showUserAuthModal();
+                return;
+            }
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const product = products[productIndex];
+            const existing = cart.find(item => item.id === product.id);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            if (window.updateCartCount) window.updateCartCount();
+        }
+
+        // Attach event listeners to Add to Cart buttons after navbar is loaded
+        function attachAddToCartListeners() {
+            document.querySelectorAll('.add-to-cart').forEach((btn, idx) => {
+                btn.addEventListener('click', () => addToCart(idx));
+            });
+        }
+
+        // Listen for custom event 'navbarLoaded' to attach listeners
+        window.addEventListener('navbarLoaded', () => {
+            attachAddToCartListeners();
+        });
+
+        // Fallback: attach listeners if navbar-include not found or event not fired
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbarInclude = document.getElementById('navbar-include');
+            if (!navbarInclude) {
+                attachAddToCartListeners();
+            }
+        });
+
+        // Optional: Hide modal when clicking outside the box
+        document.getElementById('userAuthModal').addEventListener('click', function(e) {
+            if (e.target === this) hideUserAuthModal();
+        });
+    </script>
+</body>
+</html>

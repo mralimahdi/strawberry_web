@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us - Fresh Strawberries</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body, * {
+            scrollbar-width: none !important; /* Firefox */
+            -ms-overflow-style: none !important;  /* IE and Edge */
+        }
+        html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
+            display: none !important; /* Chrome, Safari, Opera */
+            width: 0 !important;
+            background: transparent !important;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 0;
+            background: #f9f9f9;
+            overflow-y: scroll;
+        }
+        .main-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(190,24,24,225);
+            color: #fff;
+        .contact-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 60px 20px 0 20px;
+        }
+            z-index: 1000;
+            padding: 0 32px;
+        }
+        .navbar-logo img { height: 56px; filter: brightness(0) invert(1); }
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+        .navbar-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 18px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .navbar-links a:hover {
+            background: #fff;
+            color: rgba(190,24,24,225);
+        }
+        .contact-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 60px 20px 0 20px;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .contact-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 60px 20px 0 20px;
+        }
+        .contact-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .contact-info {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: rgba(190,24,24,225);
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Montserrat';
+            font-size: 1em;
+        }
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgba(190,24,24,225);
+        }
+        .submit-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: rgba(190,24,24,225);
+            color: white;
+            border: none;
+            text-decoration: none;
+            border-radius: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(190,24,24,0.3);
+            cursor: pointer;
+            width: auto;
+        }
+        .submit-btn:hover {
+            background: rgba(160,20,20,225);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(190,24,24,0.4);
+        }
+        .team-member {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+        .team-member img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        .team-member-info h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .team-member-info p {
+            color: #666;
+            margin-bottom: 3px;
+        }
+        .location-map {
+            margin-top: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        /* Footer Styles */
+        .footer {
+            background: rgba(190,24,24,225);
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section {
+            padding: 0 15px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-section p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .footer-section a:hover {
+            opacity: 0.8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Cart Link Styles */
+        .cart-link {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #fff;
+            color: rgba(190,24,24,225);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .admin-link {
+            background: rgba(255,255,255,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-include"></div>
+    <script src="js/navbar.js"></script>
+
+
+    <!-- Scrollbar include and script are now above -->
+
+    <div class="contact-container">
+        <div class="contact-grid">
+            <div class="contact-form">
+                <h2 class="section-title">Get in Touch</h2>
+                <form id="contactForm" onsubmit="return handleSubmit(event)">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+
+            <div class="contact-info">
+                <h2 class="section-title">Contact Information</h2>
+                
+                <div class="team-members">
+                    <div class="team-member">
+                        <img src="rem (0).jpg" alt="Contact Person">
+                        <div class="team-member-info">
+                            <h3>Contact Information</h3>
+                            <p>General Inquiries</p>
+                            <p><a href="tel:+923365519188">+92 336 5519188</a></p>
+                            <p><a href="mailto:mr.syedalimahdi1234@gmail.com">mr.syedalimahdi1234@gmail.com</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="location-info">
+                    <h2 class="section-title">Visit Us</h2>
+                    <p><strong>Address:</strong><br>
+                    ARID Agriculture University<br>
+                    Shamsabad, Murree Road<br>
+                    Rawalpindi, Pakistan</p>
+                    <div class="location-map">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3321.308894892837!2d73.08402547516662!3d33.64994643991777!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df95906a03cfff%3A0x2b2f1c1c99b676ce!2sArid%20Agriculture%20University%20Rawalpindi!5e0!3m2!1sen!2s!4v1707749482099!5m2!1sen!2s"
+                            width="100%" 
+                            height="300" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>We are dedicated to growing and delivering the finest quality strawberries, using sustainable farming practices and ensuring customer satisfaction.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Information</h3>
+                <p>Email: <a href="mailto:mr.syedalimahdi1234@gmail.com">mr.syedalimahdi1234@gmail.com</a></p>
+                <p>Phone: <a href="tel:+923365519188">+92 336 5519188</a></p>
+                <p>Location: ARID Agriculture University, Rawalpindi, Pakistan</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <p><a href="index.html">Home</a></p>
+                <p><a href="ordernow.html">Order Now</a></p>
+                <p><a href="tours.html">Farm Tours</a></p>
+                <p><a href="about.html">About Us</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Strawberry Farm. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Update cart count
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelector('.cart-count').textContent = count;
+        }
+
+        const userRole = localStorage.getItem('userRole');
+        if (userRole === 'admin') {
+            // Show access denied message for admin users
+            document.body.innerHTML = `
+                <div style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100vh;
+                    font-family: 'Montserrat', sans-serif;
+                    background: #f9f9f9;
+                    text-align: center;
+                    padding: 20px;
+                ">
+                    <div style="
+                        background: white;
+                        padding: 40px;
+                        border-radius: 15px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                        max-width: 500px;
+                        width: 100%;
+                    ">
+                        <h1 style="
+                            color: rgba(190,24,24,225);
+                            margin-bottom: 20px;
+                            font-size: 2em;
+                        ">Access Restricted</h1>
+                        <p style="
+                            color: #666;
+                            font-size: 1.2em;
+                            margin-bottom: 30px;
+                            line-height: 1.6;
+                        ">You can't access the contact tab as an admin. Please login as a user to access the contact page.</p>
+                        <a href="admin/dashboard.html" style="
+                            display: inline-block;
+                            padding: 15px 30px;
+                            background: rgba(190,24,24,225);
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 30px;
+                            font-weight: 600;
+                            transition: all 0.3s;
+                            box-shadow: 0 4px 15px rgba(190,24,24,0.3);
+                        " onmouseover="this.style.background='rgba(160,20,20,225)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(190,24,24,225)'; this.style.transform='translateY(0)'">Go to Admin Dashboard</a>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+        
+        const API_BASE_URL = 'http://localhost:5000';
+
+        // Handle form submission
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            try {
+                const headers = { 'Content-Type': 'application/json' };
+            const token = localStorage.getItem('token');
+            if (token) {
+                headers.Authorization = `Bearer ${token}`;
+            }
+            const res = await fetch(`${API_BASE_URL}/api/messages`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert('Thank you for your message! We will get back to you soon.');
+                    event.target.reset();
+                } else {
+                    alert('Failed to send message. Please try again.');
+                }
+            } catch (err) {
+                alert('Error sending message.');
+            }
+            return false;
+        }
+
+        // Initialize cart count
+        updateCartCount();
+    </script>
+</body>
+  <!-- Removed duplicate typewriter, breathing button, and blink-cursor CSS (already in <head>) -->

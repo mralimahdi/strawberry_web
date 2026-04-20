@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Strawberry Farm</title>
+    <script src="js/auth-check.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .cart-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .cart-btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 24px;
+            font-size: 1em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+            box-shadow: 0 2px 12px rgba(190,24,24,0.10);
+        }
+        .cart-btn.checkout {
+            background: #be1818;
+            color: #fff;
+            border: 2px solid #be1818;
+        }
+        .cart-btn.checkout:hover {
+            background: #a01414;
+            border-color: #a01414;
+            transform: translateY(-2px) scale(1.04);
+        }
+        .cart-btn.reset {
+            background: #be1818;
+            color: #fff;
+            border: 2px solid #be1818;
+        }
+        .cart-btn.reset:hover {
+            background: #a01414;
+            color: #fff;
+            border-color: #a01414;
+        }
+        .remove-btn {
+            background: #fff3e0;
+            color: #be1818;
+            border: 2px solid #be1818;
+            border-radius: 24px;
+            padding: 8px 18px;
+            font-size: 1em;
+            font-weight: 600;
+            margin-left: 10px;
+            transition: background 0.3s, color 0.3s, border 0.3s;
+        }
+        .remove-btn:hover {
+            background: #ffe0e0;
+            color: #a01414;
+            border-color: #a01414;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: #f8f8f8;
+        }
+
+        .main-navbar {
+            background: rgba(190,24,24,225);
+            color: #fff;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo img {
+            height: 50px;
+            filter: brightness(0) invert(1);
+        }
+
+        .navbar-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 300;
+            transition: all 0.3s;
+        }
+
+        .navbar-links a:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 120px auto 50px;
+            padding: 0 20px;
+        }
+
+        .cart-title {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: rgba(190,24,24,225);
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 50px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .cart-items {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item-info {
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            color: rgba(190,24,24,225);
+            font-weight: bold;
+        }
+
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            margin: 0 30px;
+        }
+
+        .quantity-btn {
+            background: rgba(190,24,24,225);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background: rgba(160,20,20,225);
+        }
+
+        .quantity-value {
+            margin: 0 15px;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            color: rgba(190,24,24,225);
+        }
+
+        .cart-summary {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: rgba(190,24,24,225);
+        }
+
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: rgba(190,24,24,225);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background: rgba(160,20,20,225);
+        }
+
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 20px;
+            color: rgba(190,24,24,225);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .continue-shopping:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .item-quantity {
+                margin: 15px 0;
+            }
+
+            .navbar-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-include"></div>
+    <script src="js/navbar.js"></script>
+            
+
+    <div class="container">
+        <h1 class="cart-title">Shopping Cart</h1>
+        <div id="cartContent"></div>
+        <div class="cart-actions" id="cartActions"></div>
+    </div>
+
+    <script>
+        // Cart logic for 3 products only
+        function isLoggedIn() {
+            return !!localStorage.getItem('token');
+        }
+
+        // Wait for both DOM and navbar to be loaded before initializing cart
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for navbar to be loaded
+            window.addEventListener('navbarLoaded', () => {
+                updateCart();
+            });
+        });
+
+        function showAuthModal() {
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100vw';
+            modal.style.height = '100vh';
+            modal.style.background = 'rgba(0,0,0,0.3)';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.zIndex = '9999';
+            modal.innerHTML = `
+                <div style="background:#fff;padding:32px 28px 24px 28px;border-radius:15px;box-shadow:0 4px 15px rgba(190,24,24,0.15);max-width:350px;width:100%;text-align:center;">
+                    <div style='color:rgba(190,24,24,225);font-size:1.3em;font-weight:600;margin-bottom:12px;'>Login or Register Required</div>
+                    <div style='color:#333;margin-bottom:22px;'>You must be registered and logged in to view your cart.</div>
+                    <div style='display:flex;gap:12px;justify-content:center;'>
+                        <button onclick="window.location.href='login.html'" style='flex:1;padding:12px 0;background:rgba(190,24,24,225);color:#fff;border:none;border-radius:8px;font-size:1em;font-weight:600;cursor:pointer;transition:background 0.2s;'>Login</button>
+                        <button onclick="window.location.href='register.html'" style='flex:1;padding:12px 0;background:rgba(190,24,24,225);color:#fff;border:none;border-radius:8px;font-size:1em;font-weight:600;cursor:pointer;transition:background 0.2s;'>Register</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        if (!isLoggedIn()) {
+            showAuthModal();
+            document.getElementById('cartContent').innerHTML = '';
+            throw new Error('Not logged in');
+        }
+
+        // Only show 3 products in cart
+        const allProducts = [
+            {
+                id: 'box1',
+                name: 'Premium Fresh Strawberries',
+                price: 6.99,
+                image: 'rem (0).jpg'
+            },
+            {
+                id: 'box2',
+                name: 'Organic Family Pack',
+                price: 15.99,
+                image: 'rem (1).png'
+            },
+            {
+                id: 'box3',
+                name: 'Premium Selection Box',
+                price: 9.99,
+                image: 'rem (2).jpg'
+            }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart = cart.filter(item => allProducts.some(p => p.id === item.id));
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        function updateCart() {
+            const cartContent = document.getElementById('cartContent');
+            const cartCount = document.querySelector('.cart-count');
+            const cartActions = document.getElementById('cartActions');
+
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="cart-empty">
+                        <h2>Your cart is empty</h2>
+                        <p>Looks like you haven't added any items yet.</p>
+                        <a href="ordernow.html" class="continue-shopping">Continue Shopping</a>
+                    </div>
+                `;
+                cartActions.innerHTML = '';
+                cartCount.textContent = '0';
+                return;
+            }
+
+            let subtotal = 0;
+            // Generate a random shipping rate between $2 and $8 for demo
+            const shippingRates = [2, 3, 4, 5, 6, 7, 8];
+            const shipping = shippingRates[Math.floor(Math.random() * shippingRates.length)];
+            const cartHTML = `
+                <div class="cart-items">
+                    ${cart.map(item => {
+                        const itemTotal = item.price * item.quantity;
+                        subtotal += itemTotal;
+                        return `
+                            <div class="cart-item">
+                                <img src="${item.image}" alt="${item.name}" style="width:80px;height:80px;border-radius:10px;margin-right:20px;object-fit:cover;">
+                                <div class="item-info">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-price">$${item.price.toFixed(2)}</div>
+                                </div>
+                                <div class="item-quantity">
+                                    <button class="quantity-btn" onclick="updateQuantity('${item.id}', -1)">-</button>
+                                    <span class="quantity-value">${item.quantity}</span>
+                                    <button class="quantity-btn" onclick="updateQuantity('${item.id}', 1)">+</button>
+                                </div>
+                                <div class="item-total">$${itemTotal.toFixed(2)}</div>
+                                <button class="remove-btn" onclick="removeItem('${item.id}')">Remove</button>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>$${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span>$${shipping.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Total</span>
+                        <span>$${(subtotal + shipping).toFixed(2)}</span>
+                    </div>
+                    <div style="margin-top:12px;color:#be1818;font-size:1em;font-weight:500;text-align:right;">
+                        <i class="fas fa-info-circle" style="margin-right:6px;"></i>
+                        Shipping charges are randomly generated for demo. Actual charges will depend on city and location at checkout.
+                    </div>
+                </div>
+            `;
+
+            cartContent.innerHTML = cartHTML;
+            cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            // Cart actions: Checkout, Reset Cart
+            cartActions.innerHTML = `
+                <button class="cart-btn checkout" onclick="checkout()">Proceed to Checkout</button>
+                <button class="cart-btn reset" onclick="resetCart()">Reset Cart</button>
+            `;
+        }
+
+        window.updateQuantity = function(id, change) {
+            const item = cart.find(item => item.id === id);
+            if (item) {
+                item.quantity = Math.max(1, item.quantity + change);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCart();
+            }
+        }
+
+        window.removeItem = function(id) {
+            cart = cart.filter(item => item.id !== id);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        window.checkout = function() {
+            window.location.href = 'checkout.html';
+        }
+        window.resetCart = function() {
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+        updateCart();
+    </script>
+</body>
+</html>

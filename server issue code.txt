@@ -1,0 +1,8 @@
+
+cd backend-api
+node server.js
+
+
+
+taskkill /F /IM node.exe
+npx nodemon backend-api/server.js

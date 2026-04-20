@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Strawberry Farm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: #f8f8f8;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(190,24,24,225);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .sidebar-logo img {
+            height: 50px;
+            filter: brightness(0) invert(1);
+        }
+
+        .logout-btn {
+            width: calc(100% - 40px);
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            padding: 12px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-item {
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+
+
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            position: relative;
+            min-height: 100vh;
+            background: #f8f8f8;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-text h1 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .welcome-text p {
+            color: #666;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .refresh-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* Search checkboxes styling */
+        .search-options label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+            color: #555;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .search-options label:hover {
+            background-color: #f0f0f0;
+        }
+
+        .search-options input[type="checkbox"] {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: rgba(190,24,24,0.1);
+            color: #333;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .dashboard-tab:hover,
+        .dashboard-tab.active {
+            background: rgba(190,24,24,225);
+            color: white;
+        }
+
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+
+        .content-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(190,24,24,225);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        td:last-child {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .action-btn:hover {
+            background: rgba(160,20,20,225);
+        }
+
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 10px;
+            min-width: 900px;
+            table-layout: auto;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            word-break: break-word;
+            white-space: nowrap;
+            vertical-align: top;
+            text-align: center;
+        }
+
+        th {
+            background: #f8f8f8;
+            font-weight: 600;
+            color: #333;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: center;
+        }
+        /* Responsive min-width for important columns, and keep actions in row */
+
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-confirmed {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-delivered {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        /* Additional logout button styles have been merged into the main .logout-btn class above */
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid rgba(190,24,24,225);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+                padding: 20px 10px;
+            }
+
+            .sidebar .nav-item span,
+            .sidebar .logout-btn span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 60px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .dashboard-tabs {
+                flex-direction: column;
+            }
+
+            .dashboard-tab {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loading" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="../logo.svg" alt="Logo">
+        </div>
+        <button onclick="handleLogout()" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </button>
+        <a href="#" class="nav-item active" data-section="ordersSection" style="display:flex;align-items:center;">
+            <span class="nav-badge" id="badgeNewOrders" style="margin-right:10px; background:#fff; color:#be1818; border-radius:50%; padding:2px 8px; font-size:0.95em; font-weight:600; min-width:24px; display:inline-block; text-align:center;"></span>
+            <span>New Orders</span>
+        </a>
+        <a href="#" class="nav-item" data-section="completedSection" style="display:flex;align-items:center;">
+            <span class="nav-badge" id="badgeCompletedOrders" style="margin-right:10px; background:#fff; color:#be1818; border-radius:50%; padding:2px 8px; font-size:0.95em; font-weight:600; min-width:24px; display:inline-block; text-align:center;"></span>
+            <span>Completed</span>
+        </a>
+        <a href="#" class="nav-item" data-section="toursSection" style="display:flex;align-items:center;">
+            <span class="nav-badge" id="badgeTours" style="margin-right:10px; background:#fff; color:#be1818; border-radius:50%; padding:2px 8px; font-size:0.95em; font-weight:600; min-width:24px; display:inline-block; text-align:center;"></span>
+            <span>Booked Tours</span>
+        </a>
+        <a href="#" class="nav-item" data-section="messagesSection" style="display:flex;align-items:center;">
+            <span class="nav-badge" id="badgeMessages" style="margin-right:10px; background:#fff; color:#be1818; border-radius:50%; padding:2px 8px; font-size:0.95em; font-weight:600; min-width:24px; display:inline-block; text-align:center;"></span>
+            <span>Messages</span>
+        </a>
+        <a href="#" class="nav-item" data-section="customersSection" style="display:flex;align-items:center;">
+            <span class="nav-badge" id="badgeCustomers" style="margin-right:10px; background:#fff; color:#be1818; border-radius:50%; padding:2px 8px; font-size:0.95em; font-weight:600; min-width:24px; display:inline-block; text-align:center;"></span>
+            <span>Customers</span>
+        </a>
+
+    </div>
+
+    <div class="main-content">
+        <div class="dashboard-header">
+            <div class="welcome-text">
+                <h1>Welcome back, <span id="adminName">Admin</span>!</h1>
+                <p id="currentDate"></p>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn refresh-btn" onclick="refreshDashboard()">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+                <button class="header-btn logout-btn" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+
+            <div id="ordersSection" class="dashboard-section active">
+              <div class="content-section">
+                <div class="section-header">
+                  <div>
+                    <h2 class="section-title">New Orders</h2>
+                    <div style="margin-top: 15px;">
+                      <div class="search-options" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+                        <label><input type="checkbox" id="ordersSearchOrderNo" checked> Order No</label>
+                        <label><input type="checkbox" id="ordersSearchCustomer" checked> Customer Name</label>
+                        <label><input type="checkbox" id="ordersSearchProduct" checked> Product(s)</label>
+                        <label><input type="checkbox" id="ordersSearchQuantity"> Quantity</label>
+                        <label><input type="checkbox" id="ordersSearchTotal"> Total Amount</label>
+                        <label><input type="checkbox" id="ordersSearchStreet"> Street</label>
+                        <label><input type="checkbox" id="ordersSearchCity"> City</label>
+                        <label><input type="checkbox" id="ordersSearchState"> State</label>
+                        <label><input type="checkbox" id="ordersSearchPayment"> Payment Method</label>
+                        <label><input type="checkbox" id="ordersSearchPhone"> Contact Number</label>
+                        <label><input type="checkbox" id="ordersSearchCountry"> Country</label>
+                      </div>
+                      <input type="text" id="ordersSearch" placeholder="Search orders..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; width: 100%; max-width: 400px;">
+                    </div>
+                  </div>
+                </div>
+                <div class="table-scroll"><table>
+                  <thead>
+                    <tr>
+                      <th>Sr.</th>
+                      <th>Order No</th>
+                      <th>Customer Name</th>
+                      <th>Product(s)</th>
+                      <th>Quantity</th>
+                      <th>Total Amount</th>
+                      <th>Street</th>
+                      <th>City</th>
+                      <th>State</th>
+                      <th>Payment Method</th>
+                      <th>Contact Number</th>
+                      <th>Country</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ordersBody">
+                    <!-- Orders will be loaded here -->
+                  </tbody>
+                </table></div>
+              </div>
+            </div>
+
+            <div id="completedSection" class="dashboard-section" style="display:none;">
+              <div class="content-section">
+                <div class="section-header">
+                  <div>
+                    <h2 class="section-title">Orders Completed</h2>
+                    <div style="margin-top: 15px;">
+                      <div class="search-options" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+                        <label><input type="checkbox" id="completedSearchOrderNo" checked> Order No</label>
+                        <label><input type="checkbox" id="completedSearchCustomer" checked> Customer Name</label>
+                        <label><input type="checkbox" id="completedSearchProduct" checked> Product(s)</label>
+                        <label><input type="checkbox" id="completedSearchQuantity"> Quantity</label>
+                        <label><input type="checkbox" id="completedSearchTotal"> Total Amount</label>
+                        <label><input type="checkbox" id="completedSearchStreet"> Street</label>
+                        <label><input type="checkbox" id="completedSearchCity"> City</label>
+                        <label><input type="checkbox" id="completedSearchState"> State</label>
+                        <label><input type="checkbox" id="completedSearchPayment"> Payment Method</label>
+                        <label><input type="checkbox" id="completedSearchPhone"> Contact Number</label>
+                        <label><input type="checkbox" id="completedSearchCountry"> Country</label>
+                      </div>
+                      <input type="text" id="completedSearch" placeholder="Search completed orders..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; width: 100%; max-width: 400px;">
+                    </div>
+                  </div>
+                </div>
+                <div class="table-scroll"><table>
+                  <thead>
+                    <tr>
+                      <th>Sr.</th>
+                      <th>Order No</th>
+                      <th>Customer Name</th>
+                      <th>Product(s)</th>
+                      <th>Quantity</th>
+                      <th>Total Amount</th>
+                      <th>Street</th>
+                      <th>City</th>
+                      <th>State</th>
+                      <th>Payment Method</th>
+                      <th>Contact Number</th>
+                      <th>Country</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="completedBody">
+                    <!-- Completed orders will be loaded here -->
+                  </tbody>
+                </table></div>
+              </div>
+            </div>
+
+            <div id="toursSection" class="dashboard-section" style="display:none;">
+              <div class="content-section">
+                <div class="section-header">
+                  <div>
+                    <h2 class="section-title">Booked Tours</h2>
+                    <div style="margin-top: 15px;">
+                      <div class="search-options" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+                        <label><input type="checkbox" id="toursSearchName" checked> User's Name</label>
+                        <label><input type="checkbox" id="toursSearchTour" checked> Tour Selected</label>
+                        <label><input type="checkbox" id="toursSearchDate"> Booking Date</label>
+                        <label><input type="checkbox" id="toursSearchPeople"> Number of People</label>
+                        <label><input type="checkbox" id="toursSearchContact" checked> Contact Number</label>
+                      </div>
+                      <input type="text" id="toursSearch" placeholder="Search tour bookings..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; width: 100%; max-width: 400px;">
+                    </div>
+                  </div>
+                </div>
+                <div class="table-scroll"><table>
+                  <thead>
+                    <tr>
+                      <th>Sr.</th>
+                      <th>User's Name</th>
+                      <th>Tour Selected</th>
+                      <th>Booking Date</th>
+                      <th>Number of People</th>
+                      <th>Contact Number</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="toursBody">
+                    <!-- Tours will be loaded here -->
+                  </tbody>
+                </table></div>
+              </div>
+            </div>
+
+            <div id="messagesSection" class="dashboard-section" style="display:none;">
+              <div class="content-section">
+                <div class="section-header">
+                  <div>
+                    <h2 class="section-title">Messages</h2>
+                    <div style="margin-top: 15px;">
+                      <div class="search-options" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+                        <label><input type="checkbox" id="messagesSearchName" checked> Full Name</label>
+                        <label><input type="checkbox" id="messagesSearchEmail" checked> Email</label>
+                        <label><input type="checkbox" id="messagesSearchPhone"> Contact No</label>
+                        <label><input type="checkbox" id="messagesSearchMessage" checked> Message</label>
+                        <label><input type="checkbox" id="messagesSearchDate"> Date</label>
+                        <label><input type="checkbox" id="messagesSearchTime"> Time</label>
+                      </div>
+                      <input type="text" id="messagesSearch" placeholder="Search messages..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; width: 100%; max-width: 400px;">
+                    </div>
+                  </div>
+                </div>
+                <div class="table-scroll"><table>
+                  <thead>
+                    <tr>
+                      <th>Sr.</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Contact No</th>
+                      <th>Message</th>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="messagesBody">
+                    <!-- Messages will be loaded here -->
+                  </tbody>
+                </table></div>
+              </div>
+            </div>
+
+            <div id="customersSection" class="dashboard-section" style="display:none;">
+              <div class="content-section">
+                <div class="section-header">
+                  <div>
+                    <h2 class="section-title">Customers & Contacts</h2>
+                    <div style="margin-top: 15px;">
+                      <div class="search-options" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+                        <label><input type="checkbox" id="customerSearchName" checked> Name</label>
+                        <label><input type="checkbox" id="customerSearchPhone" checked> Phone</label>
+                        <label><input type="checkbox" id="customerSearchEmail" checked> Email</label>
+                      </div>
+                      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                        <input type="text" id="customerSearch" placeholder="Search customers..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; flex: 1; min-width: 200px;">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-scroll"><table>
+                  <thead>
+                    <tr>
+                      <th>Sr.</th>
+                      <th>Name</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                    </tr>
+                  </thead>
+                  <tbody id="customersBody">
+                    <!-- Customers will be loaded here -->
+                  </tbody>
+                </table></div>
+              </div>
+            </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+
+        // Check authentication
+        function checkAuth() {
+            console.log('Checking auth...');
+            if (localStorage.getItem('isAdmin') !== 'true') {
+                console.log('Not admin, redirecting to login');
+                window.location.href = 'login.html';
+                return;
+            }
+            console.log('Admin authenticated');
+
+            
+            // Update admin name
+            document.getElementById('adminName').textContent = localStorage.getItem('adminName') || 'Admin';
+            
+            // Set current date
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', options);
+        }
+
+        // Handle logout
+        function handleLogout() {
+            localStorage.removeItem('isAdmin');
+            localStorage.removeItem('adminName');
+            localStorage.removeItem('lastLoginTime');
+            window.location.href = 'login.html';
+        }
+
+        // Show loading spinner
+        function showLoading() {
+            document.getElementById('loading').style.display = 'flex';
+        }
+
+        // Hide loading spinner
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Sidebar navigation for dashboard sections
+        const navItems = document.querySelectorAll('.nav-item[data-section]');
+        const dashboardSections = document.querySelectorAll('.dashboard-section');
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                navItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                dashboardSections.forEach(s => s.classList.remove('active'));
+                dashboardSections.forEach(s => s.style.display = 'none');
+                document.getElementById(item.dataset.section).classList.add('active');
+                document.getElementById(item.dataset.section).style.display = 'block';
+            });
+        });
+
+        // Sample data loading (replace with API calls)
+        async function loadDashboardData() {
+            console.log('Loading dashboard data...');
+          let orders = [];
+          let completed = [];
+          let tours = [];
+          let messages = [];
+          let customers = [];
+          try {
+            console.log('Fetching orders...');
+            const ordersRes = await fetch(`${API_BASE_URL}/api/dashboard/orders/new`, { cache: 'no-store' });
+            if (!ordersRes.ok) {
+              throw new Error(`Orders request failed: ${ordersRes.status}`);
+            }
+            orders = await ordersRes.json();
+            if (!Array.isArray(orders)) orders = [];
+            console.log('Orders:', orders);
+            document.getElementById('ordersBody').innerHTML = orders.map((order, index) => `
+              <tr data-id="${order.id}">
+                <td>${index + 1}</td>
+                <td>${order.id}</td>
+                <td>${order.customer}</td>
+                <td>${order.products || ''}</td>
+                <td>${order.quantity || ''}</td>
+                <td>${order.total || ''}</td>
+                <td>${order.street || ''}</td>
+                <td>${order.city || ''}</td>
+                <td>${order.state || ''}</td>
+                <td>${order.paymentMethod || ''}</td>
+                <td>${order.phone || ''}</td>
+                <td>${order.country || ''}</td>
+                <td>
+                  <button class='action-btn' data-action='complete'>Mark as Completed</button>
+                  <button class='action-btn' data-action='cancel' style='background:#888;margin-left:5px;'>Cancel</button>
+                </td>
+              </tr>
+            `).join('');
+          } catch (e) { document.getElementById('ordersBody').innerHTML = '<tr><td colspan="13">No data</td></tr>'; }
+
+            // Completed Orders
+          try {
+            console.log('Fetching completed orders...');
+            const completedRes = await fetch(`${API_BASE_URL}/api/dashboard/orders/completed`, { cache: 'no-store' });
+            if (!completedRes.ok) {
+              throw new Error(`Completed orders request failed: ${completedRes.status}`);
+            }
+            completed = await completedRes.json();
+            if (!Array.isArray(completed)) completed = [];
+            console.log('Completed orders:', completed);
+            document.getElementById('completedBody').innerHTML = completed.map((order, index) => `
+              <tr data-id="${order.id}">
+                <td>${index + 1}</td>
+                <td>${order.id}</td>
+                <td>${order.customer}</td>
+                <td>${order.products || ''}</td>
+                <td>${order.quantity || ''}</td>
+                <td>${order.total || ''}</td>
+                <td>${order.street || ''}</td>
+                <td>${order.city || ''}</td>
+                <td>${order.state || ''}</td>
+                <td>${order.paymentMethod || ''}</td>
+                <td>${order.phone || ''}</td>
+                <td>${order.country || ''}</td>
+                <td>
+                  <button class='action-btn' data-action='delete' style='background:#888;'>Delete</button>
+                </td>
+              </tr>
+            `).join('');
+          } catch (e) { document.getElementById('completedBody').innerHTML = '<tr><td colspan="13">No data</td></tr>'; }
+
+            // Booked Tours
+            try {
+            console.log('Fetching tours...');
+              const toursRes = await fetch(`${API_BASE_URL}/api/dashboard/tours/booked`, { cache: 'no-store' });
+              if (!toursRes.ok) {
+                throw new Error(`Tours request failed: ${toursRes.status}`);
+              }
+              tours = await toursRes.json();
+              if (!Array.isArray(tours)) tours = [];
+              console.log('Tours:', tours);
+              if (tours && tours.length > 0) {
+                document.getElementById('toursBody').innerHTML = tours.map((tour, index) => `
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td>${tour.name || ''}</td>
+                    <td>${tour.tourSelected || ''}</td>
+                    <td>${tour.date || ''}</td>
+                    <td>${tour.people || ''}</td>
+                    <td>${tour.contactNumber || ''}</td>
+                    <td>
+                      <button class='action-btn' data-action='delete' style='background:#888;'>Delete</button>
+                    </td>
+                  </tr>
+                `).join('');
+              } else {
+                document.getElementById('toursBody').innerHTML = '<tr><td colspan="7">No tours booked</td></tr>';
+              }
+            } catch (e) { 
+              console.error('Error loading tours:', e);
+              document.getElementById('toursBody').innerHTML = '<tr><td colspan="7">Error loading tours</td></tr>'; 
+            }
+
+          // Messages
+          try {
+          console.log('Fetching messages...');
+            const messagesRes = await fetch(`${API_BASE_URL}/api/dashboard/messages`, { cache: 'no-store' });
+            if (!messagesRes.ok) {
+              throw new Error(`Messages request failed: ${messagesRes.status}`);
+            }
+            messages = await messagesRes.json();
+            if (!Array.isArray(messages)) messages = [];
+            console.log('Messages:', messages);
+            document.getElementById('messagesBody').innerHTML = messages.map((msg, index) => {
+              return `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${msg.name || ''}</td>
+                  <td>${msg.email || ''}</td>
+                  <td>${msg.phone || ''}</td>
+                  <td>${msg.message || ''}</td>
+                  <td>${msg.date || ''}</td>
+                  <td>${msg.time || ''}</td>
+                  <td>
+                    ${msg.status === 'replied' ? 
+                      `<button class='action-btn' style='background:#4CAF50;' disabled>Replied</button>` :
+                      `<button class='action-btn' data-action='reply'>Reply</button>`
+                    }
+                    <button class='action-btn' data-action='delete' style='background:#888;margin-left:5px;'>Delete</button>
+                  </td>
+                </tr>
+              `;
+            }).join('');
+          } catch (e) { document.getElementById('messagesBody').innerHTML = '<tr><td colspan="6">No data</td></tr>'; }
+
+          // Customers
+          try {
+          console.log('Fetching customers...');
+            const customersRes = await fetch(`${API_BASE_URL}/api/dashboard/customers`, { cache: 'no-store' });
+            if (!customersRes.ok) {
+              throw new Error(`Customers request failed: ${customersRes.status}`);
+            }
+            customers = await customersRes.json();
+            if (!Array.isArray(customers)) customers = [];
+            console.log('Customers:', customers);
+            
+            // Store for filtering
+            window.allCustomers = customers;
+            renderCustomers(customers);
+            
+            // Setup filters
+            
+            // Setup search
+            document.getElementById('customerSearch').oninput = function(e) {
+              const search = e.target.value.toLowerCase();
+              const filtered = window.allCustomers.filter(c => {
+                if (!search) return true; // Show all if no search term
+                
+                const searchName = document.getElementById('customerSearchName').checked;
+                const searchPhone = document.getElementById('customerSearchPhone').checked;
+                const searchEmail = document.getElementById('customerSearchEmail').checked;
+                
+                return (searchName && c.name && c.name.toLowerCase().includes(search)) ||
+                       (searchPhone && c.phone && c.phone.includes(search)) ||
+                       (searchEmail && c.email && c.email.toLowerCase().includes(search));
+              });
+              renderCustomers(filtered);
+            };
+          } catch (e) {
+            console.error('Error loading customers:', e);
+            document.getElementById('customersBody').innerHTML = '<tr><td colspan="4">No data</td></tr>';
+          }
+          
+          // Function to render customers table
+          function renderCustomers(customerList) {
+            document.getElementById('customersBody').innerHTML = customerList.map((customer, index) => `
+              <tr data-id="${customer._id || customer.id}">
+                <td>${index + 1}</td>
+                <td>${customer.name}</td>
+                <td>${customer.phone}</td>
+                <td>${customer.email}</td>
+              </tr>
+            `).join('');
+          }
+
+          // Search functionality for Orders
+          window.allOrders = orders;
+          const ordersSearchInput = document.getElementById('ordersSearch');
+          if (ordersSearchInput) {
+            ordersSearchInput.oninput = function(e) {
+              const search = e.target.value.toLowerCase();
+              const filtered = window.allOrders.filter(o => {
+                if (!search) return true; // Show all if no search term
+                
+                const searchOrderNo = document.getElementById('ordersSearchOrderNo').checked;
+                const searchCustomer = document.getElementById('ordersSearchCustomer').checked;
+                const searchProduct = document.getElementById('ordersSearchProduct').checked;
+                const searchQuantity = document.getElementById('ordersSearchQuantity').checked;
+                const searchTotal = document.getElementById('ordersSearchTotal').checked;
+                const searchStreet = document.getElementById('ordersSearchStreet').checked;
+                const searchCity = document.getElementById('ordersSearchCity').checked;
+                const searchState = document.getElementById('ordersSearchState').checked;
+                const searchPayment = document.getElementById('ordersSearchPayment').checked;
+                const searchPhone = document.getElementById('ordersSearchPhone').checked;
+                const searchCountry = document.getElementById('ordersSearchCountry').checked;
+                
+                return (searchOrderNo && o.id && o.id.toLowerCase().includes(search)) ||
+                       (searchCustomer && o.customer && o.customer.toLowerCase().includes(search)) ||
+                       (searchProduct && o.products && o.products.toLowerCase().includes(search)) ||
+                       (searchQuantity && o.quantity && o.quantity.toString().includes(search)) ||
+                       (searchTotal && o.total && o.total.toString().includes(search)) ||
+                       (searchStreet && o.street && o.street.toLowerCase().includes(search)) ||
+                       (searchCity && o.city && o.city.toLowerCase().includes(search)) ||
+                       (searchState && o.state && o.state.toLowerCase().includes(search)) ||
+                       (searchPayment && o.paymentMethod && o.paymentMethod.toLowerCase().includes(search)) ||
+                       (searchPhone && o.phone && o.phone.includes(search)) ||
+                       (searchCountry && o.country && o.country.toLowerCase().includes(search));
+              });
+              document.getElementById('ordersBody').innerHTML = filtered.map((order, index) => `
+                <tr data-id="${order.id}">
+                  <td>${index + 1}</td>
+                  <td>${order.id}</td>
+                  <td>${order.customer}</td>
+                  <td>${order.products || ''}</td>
+                  <td>${order.quantity || ''}</td>
+                  <td>${order.total || ''}</td>
+                  <td>${order.street || ''}</td>
+                  <td>${order.city || ''}</td>
+                  <td>${order.state || ''}</td>
+                  <td>${order.paymentMethod || ''}</td>
+                  <td>${order.phone || ''}</td>
+                  <td>${order.country || ''}</td>
+                  <td>
+                    <button class='action-btn' data-action='complete'>Mark as Completed</button>
+                    <button class='action-btn' data-action='cancel' style='background:#888;margin-left:5px;'>Cancel</button>
+                  </td>
+                </tr>
+              `).join('');
+            };
+          }
+
+          // Search functionality for Completed Orders
+          window.allCompleted = completed;
+          const completedSearchInput = document.getElementById('completedSearch');
+          if (completedSearchInput) {
+            completedSearchInput.oninput = function(e) {
+              const search = e.target.value.toLowerCase();
+              const filtered = window.allCompleted.filter(o => {
+                if (!search) return true; // Show all if no search term
+                
+                const searchOrderNo = document.getElementById('completedSearchOrderNo').checked;
+                const searchCustomer = document.getElementById('completedSearchCustomer').checked;
+                const searchProduct = document.getElementById('completedSearchProduct').checked;
+                const searchQuantity = document.getElementById('completedSearchQuantity').checked;
+                const searchTotal = document.getElementById('completedSearchTotal').checked;
+                const searchStreet = document.getElementById('completedSearchStreet').checked;
+                const searchCity = document.getElementById('completedSearchCity').checked;
+                const searchState = document.getElementById('completedSearchState').checked;
+                const searchPayment = document.getElementById('completedSearchPayment').checked;
+                const searchPhone = document.getElementById('completedSearchPhone').checked;
+                const searchCountry = document.getElementById('completedSearchCountry').checked;
+                
+                return (searchOrderNo && o.id && o.id.toLowerCase().includes(search)) ||
+                       (searchCustomer && o.customer && o.customer.toLowerCase().includes(search)) ||
+                       (searchProduct && o.products && o.products.toLowerCase().includes(search)) ||
+                       (searchQuantity && o.quantity && o.quantity.toString().includes(search)) ||
+                       (searchTotal && o.total && o.total.toString().includes(search)) ||
+                       (searchStreet && o.street && o.street.toLowerCase().includes(search)) ||
+                       (searchCity && o.city && o.city.toLowerCase().includes(search)) ||
+                       (searchState && o.state && o.state.toLowerCase().includes(search)) ||
+                       (searchPayment && o.paymentMethod && o.paymentMethod.toLowerCase().includes(search)) ||
+                       (searchPhone && o.phone && o.phone.includes(search)) ||
+                       (searchCountry && o.country && o.country.toLowerCase().includes(search));
+              });
+              document.getElementById('completedBody').innerHTML = filtered.map((order, index) => `
+                <tr data-id="${order.id}">
+                  <td>${index + 1}</td>
+                  <td>${order.id}</td>
+                  <td>${order.customer}</td>
+                  <td>${order.products || ''}</td>
+                  <td>${order.quantity || ''}</td>
+                  <td>${order.total || ''}</td>
+                  <td>${order.street || ''}</td>
+                  <td>${order.city || ''}</td>
+                  <td>${order.state || ''}</td>
+                  <td>${order.paymentMethod || ''}</td>
+                  <td>${order.phone || ''}</td>
+                  <td>${order.country || ''}</td>
+                  <td>
+                    <button class='action-btn' data-action='delete' style='background:#888;'>Delete</button>
+                  </td>
+                </tr>
+              `).join('');
+            };
+          }
+
+          // Search functionality for Tours
+          window.allTours = tours;
+          const toursSearchInput = document.getElementById('toursSearch');
+          if (toursSearchInput) {
+            toursSearchInput.oninput = function(e) {
+              const search = e.target.value.toLowerCase();
+              const filtered = window.allTours.filter(t => {
+                if (!search) return true; // Show all if no search term
+                
+                const searchName = document.getElementById('toursSearchName').checked;
+                const searchTour = document.getElementById('toursSearchTour').checked;
+                const searchContact = document.getElementById('toursSearchContact').checked;
+                const searchDate = document.getElementById('toursSearchDate').checked;
+                const searchPeople = document.getElementById('toursSearchPeople').checked;
+                
+                return (searchName && t.name && t.name.toLowerCase().includes(search)) ||
+                       (searchTour && t.tourSelected && t.tourSelected.toLowerCase().includes(search)) ||
+                       (searchContact && t.contactNumber && t.contactNumber.toLowerCase().includes(search)) ||
+                       (searchDate && t.date && t.date.toLowerCase().includes(search)) ||
+                       (searchPeople && t.people && t.people.toString().includes(search));
+              });
+              document.getElementById('toursBody').innerHTML = filtered.map((tour, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${tour.name || ''}</td>
+                  <td>${tour.tourSelected || ''}</td>
+                  <td>${tour.date || ''}</td>
+                  <td>${tour.people || ''}</td>
+                  <td>${tour.contactNumber || ''}</td>
+                  <td>
+                    <button class='action-btn' data-action='delete' style='background:#888;'>Delete</button>
+                  </td>
+                </tr>
+              `).join('');
+            };
+          }
+
+          // Search functionality for Messages
+          window.allMessages = messages;
+          const messagesSearchInput = document.getElementById('messagesSearch');
+          if (messagesSearchInput) {
+            messagesSearchInput.oninput = function(e) {
+              const search = e.target.value.toLowerCase();
+              const filtered = window.allMessages.filter(m => {
+                if (!search) return true; // Show all if no search term
+                
+                const searchName = document.getElementById('messagesSearchName').checked;
+                const searchEmail = document.getElementById('messagesSearchEmail').checked;
+                const searchMessage = document.getElementById('messagesSearchMessage').checked;
+                const searchPhone = document.getElementById('messagesSearchPhone').checked;
+                const searchDate = document.getElementById('messagesSearchDate').checked;
+                const searchTime = document.getElementById('messagesSearchTime').checked;
+                
+                return (searchName && m.name && m.name.toLowerCase().includes(search)) ||
+                       (searchEmail && m.email && m.email.toLowerCase().includes(search)) ||
+                       (searchMessage && m.message && m.message.toLowerCase().includes(search)) ||
+                       (searchPhone && m.phone && m.phone.includes(search)) ||
+                       (searchDate && m.date && m.date.toLowerCase().includes(search)) ||
+                       (searchTime && m.time && m.time.toLowerCase().includes(search));
+              });
+              document.getElementById('messagesBody').innerHTML = filtered.map((msg, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${msg.name || ''}</td>
+                  <td>${msg.email || ''}</td>
+                  <td>${msg.phone || ''}</td>
+                  <td>${msg.message || ''}</td>
+                  <td>${msg.date || ''}</td>
+                  <td>${msg.time || ''}</td>
+                  <td>
+                    ${msg.status === 'replied' ? 
+                      `<button class='action-btn' style='background:#4CAF50;' disabled>Replied</button>` :
+                      `<button class='action-btn' data-action='reply'>Reply</button>`
+                    }
+                    <button class='action-btn' data-action='delete' style='background:#888;margin-left:5px;'>Delete</button>
+                  </td>
+                </tr>
+              `).join('');
+            };
+          }
+
+          // Update sidebar badges only
+          document.getElementById('badgeNewOrders').textContent = orders.length;
+          document.getElementById('badgeCompletedOrders').textContent = completed.length;
+          document.getElementById('badgeTours').textContent = tours.length;
+          document.getElementById('badgeMessages').textContent = messages.length;
+          document.getElementById('badgeCustomers').textContent = customers.length;
+          console.log('Dashboard data loaded successfully');
+        }
+
+        // Refresh dashboard data
+        function refreshDashboard() {
+            showLoading();
+            loadDashboardData().then(hideLoading);
+        }
+
+        // Show different sections
+        function showSection(section) {
+            // Implement section switching logic here
+            console.log('Switching to section:', section);
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.toLowerCase().includes(section)) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // Initialize dashboard
+        window.addEventListener('load', () => {
+            checkAuth();
+            refreshDashboard();
+        });
+
+        // Handle refresh button
+        document.querySelector('.refresh-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            refreshDashboard();
+        });
+
+        // Make all buttons clickable
+        document.querySelectorAll('button, .nav-item, .stat-card').forEach(element => {
+            element.style.pointerEvents = 'auto';
+            element.style.cursor = 'pointer';
+        });
+
+        // Orders section: Mark as Completed & Cancel
+        document.getElementById('ordersBody').addEventListener('click', async function(e) {
+          if (e.target.classList.contains('action-btn')) {
+            const row = e.target.closest('tr');
+            const orderId = row.getAttribute('data-id');
+            if (!orderId) return alert('Order ID not found!');
+            showLoading();
+            // Gather all order data from row cells
+            const cells = row.querySelectorAll('td');
+            const orderData = {
+              id: cells[0].textContent,
+              customer: cells[1].textContent,
+              products: cells[2].textContent,
+              quantity: cells[3].textContent,
+              total: cells[4].textContent,
+              street: cells[5].textContent,
+              city: cells[6].textContent,
+              state: cells[7].textContent,
+              paymentMethod: cells[8].textContent,
+              phone: cells[9].textContent,
+              status: 'completed'
+            };
+            if (e.target.dataset.action === 'complete') {
+              try {
+                // Send order ID to mark as completed
+                const res = await fetch(`${API_BASE_URL}/api/dashboard/orders/${orderId}/complete`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await res.json();
+                if (result.success) {
+                  // Remove row from New Orders instantly
+                  row.remove();
+                  // Optionally, add to Completed Orders table (will show on refresh)
+                  refreshDashboard();
+                } else {
+                  alert('Failed to mark as completed');
+                  hideLoading();
+                }
+              } catch (err) {
+                alert('Error completing order');
+                hideLoading();
+              }
+            } else if (e.target.dataset.action === 'cancel') {
+              try {
+                const res = await fetch(`${API_BASE_URL}/api/dashboard/orders/cancel`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ id: orderId })
+                });
+                const result = await res.json();
+                if (result.success) {
+                  // Remove row from dashboard instantly
+                  row.remove();
+                  refreshDashboard();
+                } else {
+                  alert('Failed to cancel order');
+                  hideLoading();
+                }
+              } catch (err) {
+                alert('Error cancelling order');
+                hideLoading();
+              }
+            }
+          }
+        });
+
+        // Completed Orders section: Delete
+        document.getElementById('completedBody').addEventListener('click', async function(e) {
+          if (e.target.classList.contains('action-btn') && e.target.dataset.action === 'delete') {
+            const row = e.target.closest('tr');
+            const orderId = row.getAttribute('data-id');
+            if (!orderId) return alert('Order ID not found!');
+            showLoading();
+            try {
+              const res = await fetch(`${API_BASE_URL}/api/dashboard/orders/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: orderId })
+              });
+              const result = await res.json();
+              if (result.success) {
+                refreshDashboard();
+              } else {
+                alert('Failed to delete order');
+                hideLoading();
+              }
+            } catch (err) {
+              alert('Error deleting order');
+              hideLoading();
+            }
+          }
+        });
+
+            // Booked Tours section: Delete
+            document.getElementById('toursBody').addEventListener('click', async function(e) {
+              if (e.target.classList.contains('action-btn') && e.target.dataset.action === 'delete') {
+                const row = e.target.closest('tr');
+                const srno = parseInt(row.querySelector('td:first-child').textContent);
+                if (isNaN(srno)) {
+                  alert('Invalid serial number');
+                  return;
+                }
+/* Removed confirmation prompt for deleting booked tours */
+                showLoading();
+                try {
+                  const res = await fetch(`${API_BASE_URL}/api/dashboard/tours/delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ srno: srno })
+                  });
+                  if (!res.ok) {
+                    const errorText = await res.text();
+                    alert('Failed to delete tour: ' + errorText);
+                    hideLoading();
+                    return;
+                  }
+                  const result = await res.json();
+                  if (result.success) {
+                    row.remove(); // Remove the row immediately
+                    // Update badge count
+                    const currentCount = parseInt(document.getElementById('badgeTours').textContent);
+                    document.getElementById('badgeTours').textContent = currentCount - 1;
+                  } else {
+                    alert('Failed to delete tour: ' + (result.message || 'Unknown error'));
+                  }
+                  hideLoading();
+                } catch (err) {
+                  alert('Error deleting tour: ' + err.message);
+                  hideLoading();
+                }
+              }
+            });
+
+// Messages section: Reply & Delete
+        document.getElementById('messagesBody').addEventListener('click', async function(e) {
+          if (e.target.classList.contains('action-btn')) {
+            const row = e.target.closest('tr');
+            const srno = row.querySelector('td:first-child').textContent;
+            showLoading();
+            if (e.target.dataset.action === 'reply') {
+              hideLoading();
+              // Get message details
+              const row = e.target.closest('tr');
+              const name = row.querySelector('td:nth-child(2)').textContent;
+              const email = row.querySelector('td:nth-child(3)').textContent;
+              const message = row.querySelector('td:nth-child(5)').textContent;
+              const messageId = row.querySelector('td:first-child').textContent;
+              
+              // Redirect to reply form with pre-filled data
+              const adminName = localStorage.getItem('adminName') || 'Admin';
+              const adminEmail = 'mr.syedalimahdi1234@gmail.com'; // Admin email from config
+              window.location.href = `reply_message.html?messageId=${encodeURIComponent(messageId)}&senderName=${encodeURIComponent(adminName)}&senderEmail=${encodeURIComponent(adminEmail)}&receiverName=${encodeURIComponent(name)}&receiverEmail=${encodeURIComponent(email)}&originalMessage=${encodeURIComponent(message)}`;
+            } else if (e.target.dataset.action === 'delete') {
+              try {
+                const srno = parseInt(row.querySelector('td:first-child').textContent);
+                console.log('Deleting message with srno:', srno);
+                const res = await fetch(`${API_BASE_URL}/api/dashboard/messages/delete`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ srno: srno })
+                });
+                
+                console.log('Server response status:', res.status);
+                const responseText = await res.text();
+                console.log('Server response:', responseText);
+
+                try {
+                  const result = JSON.parse(responseText);
+                  if (res.ok && result.success) {
+                    row.remove(); // Remove the row immediately
+                    // Update badge count
+                    const currentCount = parseInt(document.getElementById('badgeMessages').textContent);
+                    document.getElementById('badgeMessages').textContent = currentCount - 1;
+                  } else {
+                    alert('Failed to delete from server: ' + (result.message || 'Unknown error'));
+                  }
+                } catch (parseError) {
+                  console.error('Failed to parse server response:', parseError);
+                  alert('Server returned invalid response: ' + responseText);
+                }
+                hideLoading();
+              } catch (err) {
+                alert('Error deleting message');
+                hideLoading();
+              }
+            }
+          }
+        });
+
+// Customers section: Remove
+document.getElementById('customersBody').addEventListener('click', async function(e) {
+  if (e.target.classList.contains('action-btn') && e.target.dataset.action === 'remove') {
+    const row = e.target.closest('tr');
+    const srno = row.querySelector('td:first-child').textContent;
+    if (!srno) {
+      alert('Customer serial number not found!');
+      return;
+    }
+    showLoading();
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/dashboard/customers/remove`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ srno: srno })
+      });
+      
+      const responseText = await res.text();
+
+      try {
+        const result = JSON.parse(responseText);
+        if (res.ok && result.success) {
+          row.remove(); // Remove the row immediately
+          // Update badge count
+          const currentCount = parseInt(document.getElementById('badgeCustomers').textContent);
+          document.getElementById('badgeCustomers').textContent = currentCount - 1;
+        } else {
+          alert('Failed to delete from server: ' + (result.message || 'Unknown error'));
+        }
+      } catch (parseError) {
+        console.error('Failed to parse server response:', parseError);
+        alert('Server returned invalid response: ' + responseText);
+      }
+      hideLoading();
+    } catch (err) {
+      alert('Error deleting customer');
+      hideLoading();
+    }
+  }
+});
+    </script>
+</body>
+</html>

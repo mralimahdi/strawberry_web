@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Strawberry Farm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        body {
+            background: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('rem (4).jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-logo img {
+            height: 60px;
+        }
+        h1 {
+            color: rgba(190,24,24,225);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        input:focus {
+            border-color: rgba(190,24,24,225);
+            outline: none;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(190,24,24,225);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .login-btn:hover {
+            background: rgba(160,20,20,225);
+        }
+        .error-message {
+            color: rgba(190,24,24,225);
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .auth-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .auth-links a {
+            color: rgba(190,24,24,225);
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-logo">
+            <img src="logo.svg" alt="Logo">
+        </div>
+        <h1>User Login</h1>
+        <div id="errorMessage" class="error-message"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        <div class="auth-links">
+            <a href="register.html">Create Account</a> | 
+            <a href="forgot.html">Forgot Password?</a>
+        </div>
+    </div>
+
+    <script>
+        console.log('Login page loaded');
+
+        function handleLogin(event) {
+            console.log('handleLogin called');
+            event.preventDefault();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value.trim();
+
+            console.log('Email:', email);
+            console.log('Password length:', password.length);
+
+            fetch('http://localhost:5000/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: email, password: password })
+            })
+            .then(async res => {
+                console.log('Response status:', res.status);
+                const data = await res.json();
+                console.log('Response data:', data);
+                if (!res.ok) {
+                    throw new Error(data.message || 'Invalid username or password');
+                }
+                return data;
+            })
+            .then(data => {
+                console.log('Login successful:', data);
+                const token = data.token || email;
+                const role = data.role || 'user';
+                localStorage.setItem('token', token);
+                localStorage.setItem('userRole', role);
+                if (data.user) {
+                    localStorage.setItem('userName', data.user.name);
+                    localStorage.setItem('userEmail', data.user.email);
+                }
+                if (window.updateAuthLink) window.updateAuthLink();
+
+                const redirectAfterLogin = localStorage.getItem('redirectAfterLogin');
+                if (redirectAfterLogin && redirectAfterLogin !== 'login.html' && redirectAfterLogin !== 'register.html') {
+                    localStorage.removeItem('redirectAfterLogin');
+                    window.location.href = redirectAfterLogin;
+                    return;
+                }
+
+                if (role === 'admin') {
+                    window.location.href = 'admin/dashboard.html';
+                } else {
+                    window.location.href = 'cart.html';
+                }
+            })
+            .catch(err => {
+                console.error('Login error:', err);
+                document.getElementById('errorMessage').textContent = err.message;
+                document.getElementById('errorMessage').style.display = 'block';
+            });
+
+            return false;
+        }
+
+        // Attach login submit handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            if (form) {
+                form.addEventListener('submit', handleLogin);
+            }
+        });
+    </script>
+</body>
+</html>

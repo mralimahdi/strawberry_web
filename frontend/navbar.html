@@ -1,0 +1,40 @@
+<!--
+  Global Navbar Include File
+  Copy this file as-is. To use on any page, add:
+  <div id="navbar-include"></div>
+  <script src="js/navbar.js"></script>
+  (navbar.js will fetch and inject this navbar)
+-->
+<head>
+  <link rel="stylesheet" href="css/navbar.css" />
+</head>
+<nav class="main-navbar">
+  <div class="navbar-logo"><a href="index.html"><img src="logo.svg" alt="Logo" class="navbar-logo-img" /></a></div>
+  <div class="navbar-links">
+    <a href="index.html">HOME</a>
+    <a href="ordernow.html" class="auth-nav-item">ORDER NOW</a>
+    <a href="tours.html">FARM TOURS</a>
+    <a href="about.html">ABOUT US</a>
+    <a href="contact.html">CONTACT</a>
+    <a href="cart.html" class="auth-nav-item cart-link">
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-count">0</span>
+    </a>
+    <a href="#" id="auth-link" class="non-auth-nav-item">LOGIN</a>
+    <a href="admin/login.html" class="admin-link admin-nav-item">ADMIN</a>
+    <div id="user-profile" class="user-profile auth-nav-item" style="display: none;">
+      <button class="profile-btn">
+        <i class="fas fa-cog"></i>
+      </button>
+      <div class="profile-dropdown">
+        <div class="profile-info">
+          <div class="profile-name" id="profile-name">Username</div>
+          <div class="profile-email" id="profile-email">user@example.com</div>
+        </div>
+        <div class="profile-actions">
+          <a href="#" id="logout-link">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

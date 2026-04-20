@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Tour - Strawberry Farm</title>
+    <script src="js/auth-check.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { background: #f8f8f8; font-family: 'Montserrat', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); max-width: 400px; width: 100%; }
+        h1 { color: #be1818; text-align: center; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; color: #666; }
+        input, select {
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 5px;
+            font-size: 1em;
+            display: block;
+        }
+        input:focus, select:focus { border-color: #be1818; outline: none; }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #be1818;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        .btn:hover { background: #a01414; }
+        .error-message { color: #be1818; text-align: center; margin-bottom: 20px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Book a Farm Tour</h1>
+        <div id="book-error" class="error-message"></div>
+        <form id="bookTourForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="tourSelected">Tour</label>
+                <select id="tourSelected" name="tourSelected" required>
+                    <option value="">Select a tour</option>
+                    <option value="Family Tour">Family Tour</option>
+                    <option value="School Tour">School Tour</option>
+                    <option value="Corporate Tour">Corporate Tour</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" required min="2025-07-19">
+            </div>
+            <div class="form-group">
+                <label for="people">Number of People</label>
+                <input type="number" id="people" name="people" min="1" max="40" required>
+            </div>
+            <div class="form-group">
+                <label for="time">Time (9:00 - 17:00)</label>
+                <input type="time" id="time" name="time" min="09:00" max="17:00" required>
+            </div>
+            <div class="form-group">
+                <label for="contactNumber">Contact Number</label>
+                <input type="text" id="contactNumber" name="contactNumber" required pattern="[0-9]{11}" maxlength="11" placeholder="e.g. 03001234567">
+            </div>
+            <button type="submit" class="btn">Book Tour</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('bookTourForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const tourSelected = document.getElementById('tourSelected').value;
+            const date = document.getElementById('date').value;
+            const people = document.getElementById('people').value;
+            const time = document.getElementById('time').value;
+            const contactNumber = document.getElementById('contactNumber').value.trim();
+            const errorDiv = document.getElementById('book-error');
+            errorDiv.style.display = 'none';
+            try {
+                const response = await fetch('http://localhost:5000/api/dashboard/tours/booked', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ name, tourSelected, date, people, time, contactNumber })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Tour booked successfully!');
+                    window.location.href = 'index.html';
+                } else {
+                    errorDiv.textContent = result.message || 'Booking failed.';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Booking error: ' + err.message;
+                errorDiv.style.display = 'block';
+            }
+        };
+
+        // Auto-fill name field from localStorage if available
+        window.onload = function() {
+            const userName = localStorage.getItem('userName') || '';
+            const userRole = localStorage.getItem('userRole');
+            if (userRole === 'admin') {
+                window.location.href = 'admin/dashboard.html';
+                return;
+            }
+            if (userName) document.getElementById('name').value = userName;
+        };
+
+        // NOTE: Make sure your backend (and dashboard) columns match these fields:
+        // name, tourSelected, date, people, time, contactNumber
+        // Update backend and dashboard.html to use the same field names and order for consistency.
+    </script>
+</body>
+</html>

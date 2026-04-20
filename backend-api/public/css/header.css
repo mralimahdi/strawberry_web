@@ -1,0 +1,11 @@
+/* Basic header.css for styling header elements */
+
+header {
+  background-color: #ffffff;
+  color: white;
+  padding: 10px 20px;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1.5em;
+  text-align: center;
+}
